@@ -1,0 +1,284 @@
+#wpadminbar {
+	display: none !important;
+}
+
+/****************************************
+
+	CSS RESET 
+
+****************************************/
+
+a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+/****************************************
+
+	FONTS
+
+****************************************/
+
+@font-face {
+  font-family: "FGrotesk";
+  font-weight: normal;
+  font-style: normal;
+  src: url("assets/fonts/FGrotesk-Book.woff2") format("woff2"), url("assets/fonts/FGrotesk-Book.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Assistant";
+  font-weight: normal;
+  font-style: normal;
+  src: url("assets/fonts/Assistant-SemiBold.woff2") format("woff2"), url("assets/fonts/Assistant-SemiBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Al Jazeera";
+  font-weight: bold;
+  font-style: normal;
+  src: url("assets/fonts/Al-Jazeera-Arabic-Bold.woff2") format("woff2"), url("assets/fonts/Al-Jazeera-Arabic-Bold.woff") format("woff");
+}
+
+
+
+
+/****************************************
+
+	GENERAL
+
+****************************************/
+
+html, body {
+	width: 100%;
+	height: 100vh;
+	margin: 0;
+	background-color: black;
+	color: white;
+	font-family: "FGrotesk", sans-serif;
+	font-size: 1.1em;
+	overflow: hidden;
+	pointer-events: none;
+	transition: background-color 3s;
+}
+
+#wrapper {
+	// border: 2px solid green;
+	background-color: black;
+	mix-blend-mode: darken;
+	opacity: 1;
+	height: 100%;
+	position: absolute;
+	z-index: 9;
+	top: 0;
+	width: 100%;
+	height: auto;
+	pointer-events: auto;
+	transition: opacity 2s;
+}
+
+a, a:visited {
+	color: white;
+	text-decoration: none;
+}
+
+#iframes_wrapper {
+	// border: 1px solid red;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	opacity: 0;
+	transition: opacity 5s;
+	// mix-blend-mode: lighten;
+	pointer-events: none;
+	iframe {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: block;
+		pointer-events: none;
+		overflow: hidden;
+		opacity: 1;
+	}
+}
+
+#loading {
+	// border: 1px solid purple;
+	position: fixed;
+	top: 48%;
+	left: 50%;
+	width: 100px;
+	height: 100px;
+	opacity: 1;
+	transform: translateX( -50%) translateY( -50% );
+	img {
+		transform-origin: 50px 50px;
+		animation: spin 5s linear infinite;
+	}
+}
+
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+/****************************************
+
+	TOP BAR
+
+****************************************/
+
+#top_bar {
+	// border: 1px solid red;
+	background-color: black;
+	position: fixed;
+	z-index: 9;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 48px;
+	padding-top: 24px;
+	#top_bar_info {
+		position: absolute;
+		top: 24px;
+		left: 24px;
+	}
+	#top_bar_langs {
+		// border: 1px solid blue;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		pointer-events: auto;
+		li {
+			display: inline-block;
+			text-transform: uppercase;
+			margin: 0 4px;
+			cursor: pointer;
+			padding-bottom: 2px;
+			letter-spacing: 0.05em;
+		}
+		li:hover, .selected {
+			border-bottom: 2px solid white;
+		}
+	}
+}
+
+/****************************************
+
+	TEXTS
+
+****************************************/
+
+#down_arrow {
+	// border: 1px solid red;
+	position: absolute;
+	width: 100%;
+	height: 44px;
+	top: calc( 100vh - 72px );
+	text-align: center;
+	img {
+		cursor: pointer;
+		height: 100%;
+		width: auto;
+		animation: bob 1s ease-in-out infinite alternate;
+	}
+}
+
+@-moz-keyframes bob {
+    from { margin-top: -4px; }
+    to { margin-top: 4px; }
+}
+@-webkit-keyframes bob {
+    from { margin-top: -4px; }
+    to { margin-top: 4px; }
+}
+@keyframes bob {
+    from { margin-top: -4px; }
+    to { margin-top: 4px; }
+}
+
+#text_wrapper {
+	// border: 1px solid green;
+	position: relative;
+	margin-top: 100vh;
+	width: 100%;
+	transition: margin-top 1s;
+	padding-bottom: 8vh;
+	.text {
+		// border: 1px solid blue;
+		display: none;
+		width: 100%;
+		text-align: center;
+		.inner_wrapper {
+			// border: 1px solid purple;
+			max-width: 1024px;
+			width: 80%;
+			line-height: 1.3;
+			margin: 0 auto;
+			display: inline-block;
+			text-align: left;
+			.main_text {
+				font-size: 2.2em;
+			}
+			.logo {
+				margin-top: 96px;
+			}
+			.after_logo_text {
+				margin-bottom: 120px;
+				font-size: 1em;
+			}
+		}
+	}
+	#text-en {
+		display: block;
+		.logo {
+			margin-left: -98px;
+		}
+	}
+	#text-he .inner_wrapper {
+		text-align: right;
+		font-family: "Assistant";
+	} 
+	#text-ar .inner_wrapper {
+		text-align: right;
+		font-family: "Al Jazeera";	
+		font-weight: bold;	
+		.logo {
+			margin-right: -98px;
+		}
+	}
+	#text_footer {
+		// border: 1px solid blue;
+		text-align: center;
+
+		div {
+			// border: 1px solid green;
+			display: inline-block;
+			max-width: 1024px;	
+			width: 80%;
+			text-align: left;
+			margin: 0 auto;			
+			div {
+				margin-right: 40px;	
+				width: auto;
+				a {
+					border-bottom: 1px solid white;
+					padding-bottom: 2px;
+				}			
+			}
+		}
+	}
+}
+
+
+
+
