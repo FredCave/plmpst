@@ -8,11 +8,17 @@ var Page = {
 
 	firstTime: true, 
 
+	framesVisible: false, 
+
 	currentLang: "en",
 
 	currentEdit: 0, 
 
-	currentIframe: "#background_two", 
+	textRevealed: false, 
+
+	currentToLoad: 2,
+
+	currentToShow: 0,  
 
 	months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 
 
@@ -37,6 +43,10 @@ var Page = {
 			self.switchLang("en");
 			$(this).addClass("selected").siblings().removeClass("selected");
 
+			if ( !self.textRevealed ) {
+				self.showText();
+			}
+
 		});
 
 		$("#he_link").on("click", function(){
@@ -44,12 +54,20 @@ var Page = {
 			self.switchLang("he");
 			$(this).addClass("selected").siblings().removeClass("selected");
 
+			if ( !self.textRevealed ) {
+				self.showText();
+			}
+
 		});
 
 		$("#ar_link").on("click", function(){
 
 			self.switchLang("ar");
 			$(this).addClass("selected").siblings().removeClass("selected");
+
+			if ( !self.textRevealed ) {
+				self.showText();
+			}
 	
 		});
 
@@ -88,7 +106,7 @@ var Page = {
 
 		$.ajax({
 
-		    url: "https://" + lang + ".wikipedia.org/w/api.php?action=query&format=json&prop=revisions&list=&titles=" + title + "&rvlimit=max",
+		    url: "https://" + lang + ".wikipedia.org/w/api.php?action=query&format=json&prop=revisions&list=&titles=" + title + "&rvlimit=500",
     		dataType: 'jsonp',
 		    headers: { 
 		    	'Api-User-Agent': 'Palimpsest/1.1 (https://palimpsest.void.xxx/; fredcave@hotmail.com)' 
@@ -97,7 +115,7 @@ var Page = {
 								
 		    	var response = data.query.pages[Object.keys(data.query.pages)[0]];
 
-		    	console.log( 97, response );
+		    	console.log( 118, response );
 
 		    	// STORE IN ARRAY
 		    	if ( lang === "en" ) { 
@@ -128,54 +146,87 @@ var Page = {
 
 	}, 
 
-	initialLoad: function () {
+	initialLoad: function ( ) {
 
 		console.log("Page.initialLoad");
 
-		// GET LATEST REVISION (ENGLISH)
-		this.getEdit();
+		// LOAD IFRAMES ONE AND TWO (BUFFER)
+		var self = this, 
+			i = 0;
+		while ( i < 2 ) {
+			// console.log( 150, this.getSrc() );
+			var response = this.getSrc();
+			$("#wrapper_" + this.currentLang + " iframe").eq(i).attr({
+				"src" 		: response[0],
+				"data-date" : response[1]
+			});
+			i++;
+		}
+
+		this.interval = "";
 
 		// FADE IN IFRAMES WRAPPER
-		setTimeout( function(){
-			// FADE OUT ANIMATION
-			$("#loading").animate({
-				opacity : 0
-			}, 1500, function (){
-				$("#loading").hide();
-			});
+		_.defer( function(){
+			self.interval = setInterval( function(){
+				self.frameLoop();
+			}, 3000 );	
+		});
 
-			$("#iframes_wrapper").css("opacity","1");
-						
+		setTimeout( function(){
+			// LOAD HEBREW INITIAL FRAMES
+			i = 0;
+			while ( i < 2 ) {
+				// console.log( 150, this.getSrc() );
+				var response = self.getSrc("he");
+				$("#wrapper_he iframe").eq(i).attr({
+					"src" 		: response[0],
+					"data-date" : response[1]
+				});
+				i++;
+			}		
+
+			setTimeout( function(){
+				// LOAD ARABIC INITIAL FRAMES
+				i = 0;
+				while ( i < 2 ) {
+					// console.log( 150, this.getSrc() );
+					var response = self.getSrc("ar");
+					$("#wrapper_ar iframe").eq(i).attr({
+						"src" 		: response[0],
+						"data-date" : response[1]
+					});
+					i++;
+				}	
+
+			}, 1000 );
+
 		}, 1000 );
 
 	}, 
 
-	getEdit: function () {
+	getSrc: function ( _lang ) {
 
-		console.log("Page.getEdit");
+		console.log("Page.getSrc");
 
 		var edit,
 			title,
 			currentArray,
-			jump = 30;
+			jump = 30,
+			lang = _lang || this.currentLang;
 
-		if ( this.currentLang === "en" ) {
+		if ( lang === "en" ) {
 			currentArray = this.enData;
 			title = "Jerusalem";
-		} else if ( this.currentLang === "he" ) {
+		} else if ( lang === "he" ) {
 			currentArray = this.heData;
 			title = "ירושלים";
-		} else if ( this.currentLang === "ar" ) {
+		} else if ( lang === "ar" ) {
 			currentArray = this.arData;
 			title = "القدس";
 		}
 
 		var edit = currentArray[ this.currentEdit ], 
-			url = "https://" + this.currentLang + ".wikipedia.org/w/index.php?title=" + title + "&oldid=" + edit.revid;
-
-		console.log( 155, edit.revid, edit.timestamp, url );
-		this.showInfo( edit );
-		this.loadIframe( url );
+			url = "https://" + lang + ".wikipedia.org/w/index.php?title=" + title + "&oldid=" + edit.revid;
 
 		// INCREMENENT
 		this.currentEdit = this.currentEdit + jump;
@@ -183,71 +234,88 @@ var Page = {
 			this.currentEdit = 0;
 		}
 
-	},
-
-	showInfo: function ( edit ) {
-
-		console.log("Page.showInfo");
-
-		console.log( 108, edit.timestamp );
-
 		var dateArray = edit.timestamp.split("-"),
 			day = dateArray[2].split("T")[0], 
 			month = this.months[ dateArray[1] - 1 ],
-			year = dateArray[0];
+			year = dateArray[0],
+			date = day + "-" + month + "-" + year;
 
-		// ANIMATION TAKES 1 SEC
-		// var interval;
-		// interval = setInterval( function(){
+		var data = [ url, date ];
 
-		// 	$("#top_bar_info .day").text( Math.floor( Math.random() * 31 ) );
-		// 	$("#top_bar_info .year").text( Math.floor( ( Math.random() * 18 ) + 2000 ) );
+		return data;
 
-		// }, 200 );
+	},
 
-		setTimeout( function (){
-			// console.log( 180, "Stop animation." );
+	frameLoop: function ( _lang ) {
+
+		console.log("Page.frameLoop");
+
+		var self = this, 
+			lang = _lang || this.currentLang;
+
+		// LOAD NEXT IFRAME
+		var data = this.getSrc( lang );
+		$("#wrapper_" + lang + " iframe").eq( this.currentToLoad ).off("load");
+		$("#wrapper_" + lang + " iframe").eq( this.currentToLoad ).attr({
+			"src" 		: data[0],
+			"data-date" : data[1]
+		});
+
+		if ( !this.framesVisible ) {
+			$("#global_iframe_wrapper").css("opacity","1");
+			$("#wrapper").css("opacity","0.5");
+			$("#loading").css("opacity","0");
+			setTimeout( function(){
+				$("#loading").hide();
+			}, 2000 );
+			this.framesVisible = true;
+		}
+
+		$("#wrapper_" + lang + " iframe").eq( this.currentToShow ).css("opacity","1").nextAll().css("opacity","0");
+
+		this.currentToShow++;
+		if ( this.currentToShow >= 3 ) {
+			this.currentToShow = 0;
+		}
+		this.currentToLoad++;
+		if ( this.currentToLoad >= 3 ) {
+			this.currentToLoad = 0;
+		}
+
+		_.defer( function(){
+			self.showInfo( $("#wrapper_" + lang + " iframe").eq( self.currentToShow - 1 ).attr("data-date") );
+		});
+
+	},
+
+	showInfo: function ( date ) {
+
+		console.log("Page.showInfo", date);
+
+		var self = this, 
+			index = 1,
+			dates = date.split("-"),
+			day = dates[0],
+			month = dates[1],
+			year = dates[2];
+
+		var interval = setInterval( function(){
+
+			$("#top_bar_info .month").text( self.months[ index ] );
+			index++;
+
+		}, 100 );
+			
+		setTimeout( function(){
 
 			// SHOW REAL INFO
-			$("#top_bar_info .day").text( day );
+			$("#top_bar_info .day").prop('number', 1).animateNumber({ number: day });
 			$("#top_bar_info .month").text( month );
-			$("#top_bar_info .year").text( year );
+			$("#top_bar_info .year").prop('number', 2000).animateNumber({ number: year });
 
-			// clearInterval( interval );
-		}, 5000 );
+			clearInterval( interval );
 
-	}, 
-
-	loadIframe: function ( url ) {
-
-		console.log("Page.loadIframe");
-
-		var self = this;
-
-		// LOAD IFRAME
-		$(this.currentIframe).attr( "src", url );
-		console.log(225,"Source added.");
-
-		console.log( 227, this.currentIframe );
-
-		setTimeout( function(){
-			$("#wrapper").css("opacity","0.5");
-			console.log(229,"Fade in..");
-			$(self.currentIframe).css("opacity","1").siblings().css("opacity","0");
-		}, 1000 );
-
-		setTimeout( function(){
-
-			// TOGGLE TO NEXT IFRAME
-			if ( this.currentIframe === "#background_one" ) {
-				this.currentIframe = "#background_two";
-			} else {
-				this.currentIframe = "#background_one";
-			}
-
-			self.getEdit();
-			
-		}, 5000 );
+		}, 500 );
 
 	}, 
 
@@ -255,12 +323,28 @@ var Page = {
 
 		console.log("Page.switchLang", lang);
 
-		if ( lang === "en" ) {
-			$("#text-en").show().siblings().not("#text_footer").hide();
-		} else if ( lang === "he" ) {
-			$("#text-he").show().siblings().not("#text_footer").hide();
-		} else if (  lang === "ar" ) {
-			$("#text-ar").show().siblings().not("#text_footer").hide();
+		var self = this;
+
+		if ( lang !== this.currentLang ) {
+
+			if ( lang === "en" ) {
+				$("#text-en").show().siblings(".text").hide();
+			} else if ( lang === "he" ) {
+				$("#text-he").show().siblings(".text").hide();
+			} else if (  lang === "ar" ) {
+				$("#text-ar").show().siblings(".text").hide();
+			}
+
+			// RESET VALUES
+			this.currentLang = lang;
+			this.currentToLoad = 2;
+			this.currentToShow = 0;
+			this.currentEdit = 0;
+			
+			$("#wrapper_" + lang).show().siblings(".iframes_wrapper").hide();
+
+			this.frameLoop( lang ); 
+
 		}
 
 	}, 
@@ -273,13 +357,29 @@ var Page = {
 
 		setTimeout( function(){
 
-			$("html,body").css("overflow-y","auto");
-
-			$("#text_wrapper").css({
-				"margin-top" : "18.5vh"
+			$("body").css({
+				"overflow-y" 	: "scroll",  
+				"height"		: "auto"
 			});
 
+			$("#wrapper").css({
+				"overflow-y"	: "auto"
+			});
+
+			_.defer( function(){
+				$("#text_wrapper").css({
+					"margin-top" 	: "18.5vh"
+				});
+			});
+
+			$("#loading").css("opacity","0");
+			setTimeout( function(){
+				$("#loading").hide();
+			}, 2000 );
+
 		}, 500 );
+
+		this.textRevealed = true;
 
 	}, 
 

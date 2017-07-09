@@ -1,16 +1,31 @@
 <?php get_header(); ?>
 	
-<div id="iframes_wrapper">
+<div id="global_iframe_wrapper">
 
-	<iframe id="background_one" src=""></iframe>
-	<iframe id="background_two" src=""></iframe>
+	<div id="wrapper_en" class="iframes_wrapper">
+		<iframe class="iframe_one" src=""></iframe>
+		<iframe class="iframe_two" src=""></iframe>
+		<iframe class="iframe_three" src=""></iframe>
+	</div>
+
+	<div id="wrapper_he" class="iframes_wrapper">
+		<iframe class="iframe_one" src=""></iframe>
+		<iframe class="iframe_two" src=""></iframe>
+		<iframe class="iframe_three" src=""></iframe>
+	</div>
+
+	<div id="wrapper_ar" class="iframes_wrapper">
+		<iframe class="iframe_one" src=""></iframe>
+		<iframe class="iframe_two" src=""></iframe>
+		<iframe class="iframe_three" src=""></iframe>
+	</div>
 
 </div>
 
 <div id="wrapper">
 
 	<div id="top_bar">
-		<div id="top_bar_info"><span class="day">9</span> <span class="month">December</span>, <span class="year">9999</span></div>
+		<div id="top_bar_info"><span class="day">15</span> <span class="month">January</span>, <span class="year">2001</span></div>
 		<ul id="top_bar_langs">
 			<li id="en_link" class="selected">En</li>
 			<li id="he_link">He</li>
@@ -38,14 +53,6 @@
 							<?php the_content(); ?>
 						</div>
 
-						<div class="logo">
-							<img src="<?php bloginfo('template_url'); ?>/assets/img/logo.svg" />
-						</div>
-
-						<div class="after_logo_text">
-							<?php the_field("after_logo_text"); ?>
-						</div>
-
 					</div>
 
 				</div>
@@ -54,6 +61,15 @@
 			endwhile;
 		endif;
 		?>
+
+		<div id="logo_wrapper">
+			<div class="logo">
+				<img src="<?php bloginfo('template_url'); ?>/assets/img/logo.svg" />
+			</div>
+			<div class="after_logo_text">
+				<?php the_field("after_logo_text"); ?>
+			</div>
+		</div>
 
 		<div id="text_footer">
 	

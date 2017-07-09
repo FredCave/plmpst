@@ -70,64 +70,87 @@ table {
   font-family: "Al Jazeera";
   font-weight: bold;
   font-style: normal;
-  src: url("assets/fonts/Al-Jazeera-Arabic-Bold.woff2") format("woff2"), url("assets/fonts/Al-Jazeera-Arabic-Bold.woff") format("woff");
+  src: url("assets/fonts/Al-Jazeera-Arabic-Bold.woff") format("woff");
 }
 /****************************************
 
 	GENERAL
 
 ****************************************/
-/* line 49, style.scss */
+/* line 54, style.scss */
+html {
+  overflow: hidden;
+}
+
+/* line 58, style.scss */
 html, body {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   margin: 0;
   background-color: black;
   color: white;
   font-family: "FGrotesk", sans-serif;
   font-size: 1.1em;
-  overflow: hidden;
   pointer-events: none;
   -webkit-transition: background-color 3s;
   transition: background-color 3s;
 }
+@media (max-width: 1024px) {
+  /* line 58, style.scss */
+  html, body {
+    font-size: 1.9vw;
+  }
+}
+@media (max-width: 800px) {
+  /* line 58, style.scss */
+  html, body {
+    font-size: 1em;
+  }
+}
 
-/* line 62, style.scss */
+/* line 76, style.scss */
 #wrapper {
   background-color: black;
   mix-blend-mode: darken;
   opacity: 1;
-  height: 100%;
-  position: absolute;
+  height: 100vh;
   z-index: 9;
   top: 0;
   width: 100%;
-  height: auto;
   pointer-events: auto;
   -webkit-transition: opacity 2s;
   transition: opacity 2s;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-/* line 77, style.scss */
+/* line 95, style.scss */
 a, a:visited {
   color: white;
   text-decoration: none;
 }
 
-/* line 82, style.scss */
-#iframes_wrapper {
+/* line 100, style.scss */
+#global_iframe_wrapper {
+  -webkit-transition: opacity 5s;
+  transition: opacity 5s;
+  opacity: 0;
+}
+/* line 103, style.scss */
+#global_iframe_wrapper .iframes_wrapper {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  opacity: 0;
-  -webkit-transition: opacity 5s;
-  transition: opacity 5s;
   pointer-events: none;
+  display: none;
 }
-/* line 93, style.scss */
-#iframes_wrapper iframe {
+/* line 112, style.scss */
+#global_iframe_wrapper .iframes_wrapper iframe {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -138,8 +161,12 @@ a, a:visited {
   overflow: hidden;
   opacity: 1;
 }
+/* line 124, style.scss */
+#global_iframe_wrapper #wrapper_en {
+  display: block;
+}
 
-/* line 106, style.scss */
+/* line 131, style.scss */
 #loading {
   position: fixed;
   top: 48%;
@@ -147,10 +174,12 @@ a, a:visited {
   width: 100px;
   height: 100px;
   opacity: 1;
-  -webkit-transform: translateX(-50%) translateY(-50%);
-          transform: translateX(-50%) translateY(-50%);
+  -webkit-transition: opacity 1s;
+  transition: opacity 1s;
+  -webkit-transform: translateX(-50%) translateY(-50%) translateZ(0);
+          transform: translateX(-50%) translateY(-50%) translateZ(0);
 }
-/* line 115, style.scss */
+/* line 141, style.scss */
 #loading img {
   -webkit-transform-origin: 50px 50px;
           transform-origin: 50px 50px;
@@ -180,7 +209,7 @@ a, a:visited {
 	TOP BAR
 
 ****************************************/
-/* line 140, style.scss */
+/* line 166, style.scss */
 #top_bar {
   background-color: black;
   position: fixed;
@@ -191,20 +220,20 @@ a, a:visited {
   height: 48px;
   padding-top: 24px;
 }
-/* line 150, style.scss */
+/* line 176, style.scss */
 #top_bar #top_bar_info {
   position: absolute;
   top: 24px;
   left: 24px;
 }
-/* line 155, style.scss */
+/* line 181, style.scss */
 #top_bar #top_bar_langs {
   width: 100%;
   height: 100%;
   text-align: center;
   pointer-events: auto;
 }
-/* line 161, style.scss */
+/* line 187, style.scss */
 #top_bar #top_bar_langs li {
   display: inline-block;
   text-transform: uppercase;
@@ -213,7 +242,7 @@ a, a:visited {
   padding-bottom: 2px;
   letter-spacing: 0.05em;
 }
-/* line 169, style.scss */
+/* line 195, style.scss */
 #top_bar #top_bar_langs li:hover, #top_bar #top_bar_langs .selected {
   border-bottom: 2px solid white;
 }
@@ -223,7 +252,7 @@ a, a:visited {
 	TEXTS
 
 ****************************************/
-/* line 181, style.scss */
+/* line 207, style.scss */
 #down_arrow {
   position: absolute;
   width: 100%;
@@ -231,109 +260,183 @@ a, a:visited {
   top: calc( 100vh - 72px );
   text-align: center;
 }
-/* line 188, style.scss */
+/* line 214, style.scss */
 #down_arrow img {
   cursor: pointer;
   height: 100%;
   width: auto;
   -webkit-animation: bob 1s ease-in-out infinite alternate;
           animation: bob 1s ease-in-out infinite alternate;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
 }
+
 @-webkit-keyframes bob {
   from {
-    margin-top: -4px;
+    margin-top: -2px;
   }
   to {
-    margin-top: 4px;
+    margin-top: 2px;
   }
 }
+
 @keyframes bob {
   from {
-    margin-top: -4px;
+    margin-top: -2px;
   }
   to {
-    margin-top: 4px;
+    margin-top: 2px;
   }
 }
-/* line 209, style.scss */
+/* line 228, style.scss */
 #text_wrapper {
   position: relative;
   margin-top: 100vh;
   width: 100%;
   -webkit-transition: margin-top 1s;
   transition: margin-top 1s;
-  padding-bottom: 8vh;
+  padding-bottom: 128px;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
 }
-/* line 216, style.scss */
+/* line 236, style.scss */
 #text_wrapper .text {
   display: none;
   width: 100%;
   text-align: center;
 }
-/* line 221, style.scss */
+/* line 241, style.scss */
 #text_wrapper .text .inner_wrapper {
   max-width: 1024px;
-  width: 80%;
+  width: 75%;
   line-height: 1.3;
   margin: 0 auto;
   display: inline-block;
   text-align: left;
 }
-/* line 229, style.scss */
+/* line 249, style.scss */
 #text_wrapper .text .inner_wrapper .main_text {
   font-size: 2.2em;
 }
-/* line 232, style.scss */
-#text_wrapper .text .inner_wrapper .logo {
-  margin-top: 96px;
+@media (max-width: 1024px) {
+  /* line 249, style.scss */
+  #text_wrapper .text .inner_wrapper .main_text {
+    font-size: 4.15vw;
+  }
 }
-/* line 235, style.scss */
-#text_wrapper .text .inner_wrapper .after_logo_text {
-  margin-bottom: 120px;
-  font-size: 1em;
+@media (max-width: 530px) {
+  /* line 249, style.scss */
+  #text_wrapper .text .inner_wrapper .main_text {
+    font-size: 1.375em;
+  }
 }
-/* line 241, style.scss */
+/* line 260, style.scss */
 #text_wrapper #text-en {
   display: block;
 }
-/* line 243, style.scss */
-#text_wrapper #text-en .logo {
-  margin-left: -98px;
-}
-/* line 247, style.scss */
+/* line 263, style.scss */
 #text_wrapper #text-he .inner_wrapper {
   text-align: right;
   font-family: "Assistant";
 }
-/* line 251, style.scss */
+/* line 267, style.scss */
 #text_wrapper #text-ar .inner_wrapper {
   text-align: right;
   font-family: "Al Jazeera";
   font-weight: bold;
 }
-/* line 255, style.scss */
-#text_wrapper #text-ar .inner_wrapper .logo {
-  margin-right: -98px;
-}
-/* line 259, style.scss */
+/* line 272, style.scss */
 #text_wrapper #text_footer {
   text-align: center;
+  margin-top: 220px;
 }
-/* line 263, style.scss */
+@media (max-width: 930px) {
+  /* line 272, style.scss */
+  #text_wrapper #text_footer {
+    margin-top: 0px;
+  }
+}
+/* line 279, style.scss */
 #text_wrapper #text_footer div {
   display: inline-block;
   max-width: 1024px;
-  width: 80%;
+  width: 75%;
   text-align: left;
   margin: 0 auto;
 }
-/* line 270, style.scss */
+/* line 286, style.scss */
 #text_wrapper #text_footer div div {
   margin-right: 40px;
   width: auto;
 }
-/* line 273, style.scss */
+@media (max-width: 800px) {
+  /* line 286, style.scss */
+  #text_wrapper #text_footer div div {
+    display: block;
+    margin-bottom: 12px;
+  }
+}
+/* line 294, style.scss */
 #text_wrapper #text_footer div div a {
   border-bottom: 1px solid white;
   padding-bottom: 2px;
+}
+
+/* line 303, style.scss */
+#logo_wrapper {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 36px;
+  height: 128px;
+}
+/* line 310, style.scss */
+#logo_wrapper .logo {
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-transform: rotate(-90deg) translateY(-72px);
+          transform: rotate(-90deg) translateY(-72px);
+  -webkit-transform-origin: 0% 0%;
+          transform-origin: 0% 0%;
+  margin-top: 14px;
+}
+/* line 317, style.scss */
+#logo_wrapper .after_logo_text {
+  -webkit-transform: rotate(-90deg);
+          transform: rotate(-90deg);
+  -webkit-transform-origin: 00% 0%;
+          transform-origin: 00% 0%;
+  height: auto;
+  text-align: left;
+  width: 100vh;
+  margin-top: -78px;
+  line-height: 1.4;
+}
+@media (max-width: 930px) {
+  /* line 303, style.scss */
+  #logo_wrapper {
+    position: relative;
+    height: auto;
+    width: 75%;
+    margin: 96px auto 120px auto;
+  }
+  /* line 332, style.scss */
+  #logo_wrapper .logo {
+    -webkit-transform: none;
+            transform: none;
+    width: 100%;
+  }
+  /* line 335, style.scss */
+  #logo_wrapper .logo img {
+    width: 100%;
+    height: auto;
+    margin-left: -0.5vw;
+  }
+  /* line 341, style.scss */
+  #logo_wrapper .after_logo_text {
+    -webkit-transform: none;
+            transform: none;
+    margin-top: 0;
+    width: 100%;
+  }
 }

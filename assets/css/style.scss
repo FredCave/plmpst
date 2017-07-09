@@ -34,11 +34,16 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
   font-family: "Al Jazeera";
   font-weight: bold;
   font-style: normal;
-  src: url("assets/fonts/Al-Jazeera-Arabic-Bold.woff2") format("woff2"), url("assets/fonts/Al-Jazeera-Arabic-Bold.woff") format("woff");
+  src: url("assets/fonts/Al-Jazeera-Arabic-Bold.woff") format("woff");
 }
 
-
-
+// @font-face {
+//     font-family: 'Folio';
+//     src: url('assets/fonts/lte50362-webfont.woff2') format('woff2'),
+//          url('assets/fonts/lte50362-webfont.woff') format('woff');
+//     font-weight: normal;
+//     font-style: normal;
+// }
 
 /****************************************
 
@@ -46,15 +51,24 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
 
 ****************************************/
 
+html {
+	overflow: hidden; 
+}
+
 html, body {
 	width: 100%;
-	height: 100vh;
+	height: 100%;
 	margin: 0;
 	background-color: black;
 	color: white;
 	font-family: "FGrotesk", sans-serif;
 	font-size: 1.1em;
-	overflow: hidden;
+	@media ( max-width: 1024px ) {
+		font-size: 1.9vw;
+	}
+	@media ( max-width: 800px ) {
+		font-size: 1em;
+	}
 	pointer-events: none;
 	transition: background-color 3s;
 }
@@ -64,14 +78,18 @@ html, body {
 	background-color: black;
 	mix-blend-mode: darken;
 	opacity: 1;
-	height: 100%;
-	position: absolute;
+	height: 100vh;
 	z-index: 9;
 	top: 0;
 	width: 100%;
-	height: auto;
 	pointer-events: auto;
 	transition: opacity 2s;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    // transform: translateZ(0);
 }
 
 a, a:visited {
@@ -79,29 +97,36 @@ a, a:visited {
 	text-decoration: none;
 }
 
-#iframes_wrapper {
-	// border: 1px solid red;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
-	opacity: 0;
+#global_iframe_wrapper {
 	transition: opacity 5s;
-	// mix-blend-mode: lighten;
-	pointer-events: none;
-	iframe {
-		width: 100%;
-		height: 100%;
-		position: absolute;
+	opacity: 0;
+	.iframes_wrapper {
+		// border: 1px solid red;
+		position: fixed;
 		top: 0;
 		left: 0;
-		display: block;
+		width: 100%;
+		height: 100vh;
 		pointer-events: none;
-		overflow: hidden;
-		opacity: 1;
+		display: none;
+		iframe {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			display: block;
+			pointer-events: none;
+			overflow: hidden;
+			opacity: 1;
+		}
+	}	
+	#wrapper_en {
+		display: block;
 	}
 }
+
+
 
 #loading {
 	// border: 1px solid purple;
@@ -111,7 +136,8 @@ a, a:visited {
 	width: 100px;
 	height: 100px;
 	opacity: 1;
-	transform: translateX( -50%) translateY( -50% );
+	transition: opacity 1s;
+	transform: translateX( -50%) translateY( -50% ) translateZ(0);
 	img {
 		transform-origin: 50px 50px;
 		animation: spin 5s linear infinite;
@@ -190,20 +216,13 @@ a, a:visited {
 		height: 100%;
 		width: auto;
 		animation: bob 1s ease-in-out infinite alternate;
+		transform: translateZ(0);
 	}
 }
 
-@-moz-keyframes bob {
-    from { margin-top: -4px; }
-    to { margin-top: 4px; }
-}
-@-webkit-keyframes bob {
-    from { margin-top: -4px; }
-    to { margin-top: 4px; }
-}
 @keyframes bob {
-    from { margin-top: -4px; }
-    to { margin-top: 4px; }
+    from { margin-top: -2px; }
+    to { margin-top: 2px; }
 }
 
 #text_wrapper {
@@ -212,7 +231,8 @@ a, a:visited {
 	margin-top: 100vh;
 	width: 100%;
 	transition: margin-top 1s;
-	padding-bottom: 8vh;
+	padding-bottom: 128px;
+	transform: translateZ(0);
 	.text {
 		// border: 1px solid blue;
 		display: none;
@@ -221,28 +241,24 @@ a, a:visited {
 		.inner_wrapper {
 			// border: 1px solid purple;
 			max-width: 1024px;
-			width: 80%;
+			width: 75%;
 			line-height: 1.3;
 			margin: 0 auto;
 			display: inline-block;
 			text-align: left;
 			.main_text {
 				font-size: 2.2em;
-			}
-			.logo {
-				margin-top: 96px;
-			}
-			.after_logo_text {
-				margin-bottom: 120px;
-				font-size: 1em;
+				@media ( max-width: 1024px ) {
+					font-size: 4.15vw;
+				}
+				@media ( max-width: 530px ) {
+					font-size: 1.375em;
+				}
 			}
 		}
 	}
 	#text-en {
 		display: block;
-		.logo {
-			margin-left: -98px;
-		}
 	}
 	#text-he .inner_wrapper {
 		text-align: right;
@@ -252,24 +268,29 @@ a, a:visited {
 		text-align: right;
 		font-family: "Al Jazeera";	
 		font-weight: bold;	
-		.logo {
-			margin-right: -98px;
-		}
 	}
 	#text_footer {
 		// border: 1px solid blue;
 		text-align: center;
-
+		margin-top: 220px;
+		@media ( max-width: 930px ) {
+			margin-top: 0px;
+		}
 		div {
 			// border: 1px solid green;
 			display: inline-block;
 			max-width: 1024px;	
-			width: 80%;
+			width: 75%;
 			text-align: left;
 			margin: 0 auto;			
 			div {
+				// border: 1px solid blue;
 				margin-right: 40px;	
 				width: auto;
+				@media ( max-width: 800px ) {
+					display: block;
+					margin-bottom: 12px;
+				}
 				a {
 					border-bottom: 1px solid white;
 					padding-bottom: 2px;
@@ -279,6 +300,49 @@ a, a:visited {
 	}
 }
 
-
-
+#logo_wrapper {
+	// border: 1px solid red;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 36px;
+	height: 128px;
+	.logo {
+		backface-visibility: hidden;
+		transform: rotate(-90deg) translateY(-72px);
+		transform-origin: 0% 0%;
+		margin-top: 14px;	
+		// display: none;	
+	}
+	.after_logo_text {
+		// border: 1px solid blue;
+		transform: rotate(-90deg);
+		transform-origin: 00% 0%;
+		height: auto;
+		text-align: left;
+		width: 100vh;
+		margin-top: -78px;
+		line-height: 1.4;
+	}
+	@media ( max-width: 930px ) {
+		position: relative;
+		height: auto;
+		width: 75%;
+		margin: 96px auto 120px auto;
+		.logo {
+			transform: none;
+			width: 100%;
+			img {
+				width: 100%;
+				height: auto;
+				margin-left: -0.5vw;
+			}
+		}
+		.after_logo_text {
+			transform: none;
+			margin-top: 0;
+			width: 100%;
+		}
+	}
+}
 
